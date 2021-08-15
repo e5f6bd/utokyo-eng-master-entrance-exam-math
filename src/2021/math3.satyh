@@ -68,7 +68,9 @@ let-block +math3 = '<
       | |= \p{ r - \frac{1}{r} } \app{\sin}{\theta - \alpha} > 0.
       |});
       したがって、求める条件は \answer-i{
-        ${r > 1} と ${\alpha < \theta < \alpha + \pi} のうちちょうど一方が満たされること
+        ${r > 1} かつ ${\alpha < \theta < \alpha + \pi}、
+        または
+        ${0 < r < 1} かつ ${\alpha + \pi < \theta < \alpha + 2\pi}
       }。
       これを図示すると、以下の通り。ただし、境界線を含まない。
       \fig-center-ctx(fun ctx -> (
