@@ -1,5 +1,9 @@
 @require: math
 
+let-math \atval p = ${
+  \genparen!(AZMathParens.empty-bracket-l)!(AZMathParens.abs-bracket-r){#p}
+}
+
 % physics - 2.5 Derivatives
 let dv-base ?:n d f x = 
   match n with

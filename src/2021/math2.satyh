@@ -1,17 +1,17 @@
 @import: common
 @import: ../../packages/common
 
-let-math \pa n = ${\app{P_\mathrm{A}}{#n}}
-let-math \pb n = ${\app{P_\mathrm{B}}{#n}}
-let-math \ra n = ${\app{R_\mathrm{A}}{#n}}
-
 let-inline \enumerate-cases x = {\listing-from-block<
   +Enumitem.enumerate?:(
     Enumitem.(change-by-depth [paren-roman])
   )(x);
 >}
 
-let-block +math2 = '<
+let-block +math2 = 
+  let-math \pa n = ${\app{P_\mathrm{A}}{#n}} in
+  let-math \pb n = ${\app{P_\mathrm{B}}{#n}} in
+  let-math \ra n = ${\app{R_\mathrm{A}}{#n}} in
+'<
   +subject-heading {数学2}
 
   +enumerate {

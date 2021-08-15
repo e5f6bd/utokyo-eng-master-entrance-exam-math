@@ -1,0 +1,206 @@
+@require: latexcmds/latexcmds
+@import: common
+@import: ../../packages/common
+
+let-math \neg = math-group MathOp MathOp ${-}
+let-inline ctx \fig-center-ctx f = read-inline ctx {\fig-center(f ctx);}
+
+let-math \int-c x = ${\int_{C_#x} \app{f}{z} \dd{z}}
+
+let-block +math3 = '<
+  +subject-heading{数学3}
+
+  +enumerate {
+    * **  ${\app{M}{z} = z} のとき、
+          ${
+           z = \frac{mz}{mz - z + 1}
+           \iff \p{m - 1}\pb{z - 1}z = 0.
+          }
+          したがって、不動点は ${z = \answer{0, 1}}。
+
+      **  \gather(${
+          | \dv{M}{z}
+            = \frac{m \pb{\p{m-1}z + 1} - mz \p{m - 1}}{\pb{\p{m-1}z + 1}^2}
+          |});
+          であるから、${z = 0} で ${\dv{M}{z} = \answer{m}}。
+
+      **  円 ${\abs{z - \frac{1-i}{2} = \frac{1}{\sqrt{2}}}} は
+          ${\app{M}{z}} の不動点 ${0, 1} を通る。
+          ${\app{M}{z}} は一次分数変換なので、円は円か直線に写る。
+          したがって、変換後の図形が直線となる必要十分条件は、
+          変換後の図形の ${z = 0} の傾きが ${0}、すなわち
+          図形に沿った微分が実数であること。
+          この円は ${z = \frac{1-i}{2} + \frac{1}{\sqrt{2}} e^{it}} (${t \in \mathbb{R}})
+          と表されるので、
+          \align(${
+          | \atval{ \dv{\app{M}{\app{z}{t}}}{t} }_{\app{z}{t} = 0}
+            |= \atval{ \dv{z}{t} }_{t = \frac{3}{4}\pi} \cdot \atval{ \dv{M}{z} }_{z = 0}
+          | |= \atval{ \frac{i}{\sqrt{2}} e^{it} }_{t = \frac{3}{4}\pi} \cdot m
+          |});
+          が実数、かつ${\abs{m} = 1, m \neq 1} を満たすのは、
+          ${m = \answer{\pm\frac{1-i}{\sqrt{2}}}}。
+
+          \linebreak;
+
+          (別解)
+          円 ${C: \abs{z - \frac{1-i}{2} = \frac{1}{\sqrt{2}}}} は
+          ${\app{M}{z}} の不動点 ${0, 1} を通る。
+          ${\app{M}{z}} は一次分数変換なので、円は円か直線に写る。
+          したがって、${C} 上の点 ${\neg i} が ${0} でも ${1} でもない実軸上の点に写れば、
+          図形全体は実軸に写る。
+          いま、
+          \gather(${
+          | \mathbb{R} \ni \app{M}{-i}
+            \iff \mathbb{R} \ni \frac{1}{\app{M}{-i}} = \frac{-mi+i+1}{-mi} = 1 - \frac{1-i}{m}
+          |});
+          なので、${m = \pm\frac{1-i}{\sqrt{2}}} が候補。
+          実際このとき${\app{M}{-i} \neq 0, 1} なので、${m = \answer{\pm\frac{1-i}{\sqrt{2}}}}。
+
+
+    * 実数 ${r, \theta} を用いて ${z = r e^{i\theta}} とおけば、
+      \align(${
+      | \app{f}{z}
+        |= \p{\cos\alpha - i\sin\alpha} \cdot r\p{\cos\theta + i\sin\theta}
+          +\p{\cos\alpha + i\sin\alpha} \cdot \frac{1}{r} \p{\cos\theta - i\sin\theta}
+      | \therefore \Im \app{f}{z}
+        |= r \p{\cos\alpha\sin\theta - \sin\alpha\cos\theta}
+          + \frac{1}{r} \p{-\cos\alpha\sin\theta + \sin\alpha\cos\theta}
+      | |= \p{ r - \frac{1}{r} } \app{\sin}{\theta - \alpha} > 0.
+      |});
+      したがって、求める条件は \answer-i{
+        ${r > 1} と ${\alpha < \theta < \alpha + \pi} のうちちょうど一方が満たされること
+      }。
+      これを図示すると、以下の通り。ただし、境界線を含まない。
+      \fig-center-ctx(fun ctx -> (
+        open Gr in open Color in
+        let (w, h) = (200pt, 200pt) in
+        let (cx, cy) = (w *' .5, h *' .5) in
+        let phi = 0.6 in
+        let (ys, yt) =
+          let d = cx *' tan phi in
+          (cy -' d, cy +' d)
+        in
+        let r = 60pt in
+        let black-arrow = arrow 1pt black 8pt 8pt 3pt in
+        let upper =
+          start-path (0pt, h)
+            |> line-to (w, h)
+            |> line-to (w, yt)
+            |> line-to (0pt, ys)
+            |> close-with-line
+        in
+        let circ = circle (cx, cy) r in
+        let to-fill = unite-path circ upper in
+        let black-line = stroke 1pt black in
+        let draw-math p m = read-inline ctx {${#m}} |> draw-text p in
+        let gs = List.concat [
+          % [rectangle (0pt, 0pt) (w, h) |> stroke 1pt black];
+          [to-fill |> fill (RGB(0.78, 1., 1.))];
+          black-arrow (cx, 0pt) (cx, h);
+          black-arrow (0pt, cy) (w, cy);
+          [circ |> black-line];
+          [line (0pt, ys) (w, yt) |> black-line];
+          [
+            draw-math (cx, h +' 3pt) ${\Im};
+            draw-math (w +' 3pt, cy) ${\Re};
+            draw-math (cx -' 12pt, cy +' 3pt) ${O};
+          ];
+            let dy = 12pt in
+          [
+            draw-math (cx +' r +' 4pt, cy -' dy) ${1};
+            draw-math (cx -' r -' 18pt, cy -' dy) ${\neg 1};
+          ];
+            let dx = 4pt in
+          [
+            draw-math (cx +' dx, cy -' r -' 10pt) ${\neg i};
+            draw-math (cx +' dx, cy +' r +' 3pt) ${i};
+          ];
+            let r = 15pt in
+            let h = 3pt in
+            let (s, c) = (sin phi, cos phi) in
+            let (tx, ty) = (cx +' r *' c, cy +' r *' s) in
+          [
+            start-path (cx +' r, cy)
+              |> bezier-to (cx +' r, cy +' h) (tx +' h *' c, ty -' h *' s) (tx, ty)
+              % |> line-to (tx, ty)
+              |> terminate-path
+              |> stroke 0.6pt black;
+          ];
+          [draw-math (cx +' 20pt, cy +' 5pt) ${\alpha}];
+        ] in
+        let ib =
+          inline-graphics w h (w *' (0. -. .5)) (fun p -> gs |> List.map (shift-graphics p))
+        in
+        FigBox.inlinebox ib
+      ));
+
+    * **  ${\app{f}{z} = \frac{x^\beta}{\p{x+i}^2 \p{x-i}^2}} は
+          ${C} 内には ${z = i} でのみ極をもち、その極は2位なので、
+          \align(${
+          | \oint_C \app{f}{z} \dd{z}
+            |= 2\pi i \Res\pB{f, z = i}
+          | |= 2\pi i \atval{ \dv{}{z} \frac{z^\beta}{\p{z + i}} }_{z = i}
+          | |= \frac{\pi}{2} e^{\pi i\beta/2} \p{1 - \beta}.
+          |});
+
+      **  \align(${
+          | \int-c{2}
+            |= \int_{-R}^{-r} \frac{x^\beta}{\p{x^2 + 1}^2} \dd{x}
+          | |= \int_R^r \frac{\p{-x}^\beta}{\p{x^2 + 1}^2} \p{-\dd{x}}
+          | |= e^{i\pi\beta} \int_r^R \frac{x^\beta}{\p{x^2 + 1}^2} \dd{x}
+          |});
+          \align(${
+          | \therefore \int-c{1} + \int-c{2}
+            |= \answer{ \p{1 + e^{i\pi\beta}} \int_r^R \frac{x^\beta}{\p{x^2+1}^2} \dd{x} }.
+          |});
+
+      **  \align(${
+          | \abs{ \int-c{R} }
+            |= \abs{
+              \int_0^\pi \frac{\p{R e^{i\theta}}^\beta}{\p{\p{R e^{i\theta}}^2 + 1}^2} 
+              iRe^{i\theta} \dd{\theta}
+            }
+          | |\leq \int_0^\pi
+              \abs{
+                \frac{\p{R e^{i\theta}}^\beta}{\p{\p{R e^{i\theta}}^2 + 1}^2} iRe^{i\theta}
+              } \dd{\theta}
+          | |\leq \int_0^\pi \frac{R^2}{\p{R^2 - 1}^2} \dd{\theta}
+          | |= \frac{R^2}{\p{R^2 - 1}^2}\pi
+          | |\to 0 \math-skip!(1cm) \p{R \to \infty}.
+          |});
+          したがって、${\lim_{R\to\infty} \int-c{R} = \answer{0}}。
+
+      **  3. と同様の議論で、
+          \align(${
+          | \abs{ \int-c{r} }
+            |\leq \int_0^\pi \frac{r^2}{\p{r^2 - 1}^2} \dd{\theta}.
+          |});
+          十分小さい ${r} で ${\frac{1}{2} < \p{r^2 - 1}^2} なので、
+          \align(${
+          |\int_0^\pi \frac{r^2}{\p{r^2 - 1}^2} \dd{\theta}.
+            |< \int_0^\pi 2r^2 \dd{\theta}
+            = 2\pi r^2 \to 0 \math-skip!(1cm) \p{r \to 0}.
+          |});
+          したがって、${\lim_{r\to\infty} \int-c{r} = \answer{0}}。
+
+      **  \gather(${
+          | \int-c{1} + \int-c{2} + \int-c{R} + \int-c{r} = \oint_C \app{f}{z} \dd{z}
+          |});
+          の ${R\to\infty, r\to 0} での極限をとると、
+          \align(${
+          | \p{1 + e^{i\pi\beta}} I |= \frac{\pi}{2} e^{\pi i \beta/2} \p{1-\beta}
+          | \therefore I
+            |= \frac{\pi}{2} \cdot \frac{e^{\pi i\beta/2}}{1 + e^{i\pi\beta}} \p{1-\beta}
+          | |= \frac{\pi\p{1 - \beta}}{4\cos\frac{\pi\beta}{2}}.
+          |});
+  }
+>
+
+% Verification
+% In[25]:= Integrate[x^b / (x^2 + 1)^2, {x, 0, Infinity}, Assumptions -> 0 < b < 1]
+% 
+%                            b Pi
+%          -((-1 + b) Pi Sec[----])
+%                             2
+% Out[25]= ------------------------
+%                     4
