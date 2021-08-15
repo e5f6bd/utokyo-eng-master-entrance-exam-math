@@ -1,6 +1,8 @@
 @import: ../../packages/common
 @import: math1
+@import: math2
 
 document '<
   +math1;
+  +math2;
 >

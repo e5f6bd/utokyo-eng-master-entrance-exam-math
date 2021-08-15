@@ -1,0 +1,122 @@
+@import: common
+@import: ../../packages/common
+
+let-math \pa n = ${\app{P_\mathrm{A}}{#n}}
+let-math \pb n = ${\app{P_\mathrm{B}}{#n}}
+let-math \ra n = ${\app{R_\mathrm{A}}{#n}}
+
+let-inline \enumerate-cases x = {\listing-from-block<
+  +Enumitem.enumerate?:(
+    Enumitem.(change-by-depth [paren-roman])
+  )(x);
+>}
+
+let-block +math2 = '<
+  +subject-heading {数学2}
+
+  +enumerate {
+    * **  固有多項式は、
+          \align(${
+          | \vmatrix!(3){| \lambda | -3 | 0 | 3 | \lambda | -4 | 0 | 4 | \lambda |}
+            |= \lambda^3 + 9\lambda + 16\lambda = 0.
+            \label!(`211eg`)
+          |});
+          したがって、${A} の固有値は ${\lambda = \answer{0, \pm 5i}}。
+
+      **  Caylay-Hamilton の定理および固有多項\eqref(`211eg`);より、
+          \gather(${
+          | A^3 + 25A = 0
+            \label!(`212a3`)
+          |});
+          なので、${\p{b, c, d} = \answer{\p{0, 25, 0}}}。
+
+      **  \eqref(`212a3`); より、${A^{2n+1} = \answer{ \p{-25}^n A }}。
+
+      **  \align(${
+          | \app{\exp}{tA}
+            |= \sum_{n=0}^\infty \frac{\p{tA}^n}{n\!}
+          | |= \sum_{n=0}^\infty \p{
+                \frac{t^{2n+1}}{\p{2n+1}\!} A^{2n+1} + \frac{t^{2n+2}}{\p{2n+2}\!} A^{2n+2}
+              } + I
+          | |= \sum_{n=0}^\infty \p{
+                \frac{t^{2n+1}}{\p{2n+1}\!} \p{-25}^n A
+                + \frac{t^{2n+2}}{\p{2n+2}\!} \p{-25}^n A^2
+              } + I
+          |});
+          したがって、
+          \align(${
+          | p
+            |= \sum_{n=0}^\infty \frac{t^{2n+1}}{\p{2n+1}\!} \p{-25}^n
+          | |= t \sum_{n=0}^\infty \frac{\p{-1}^n}{\p{2n+1}\!} \p{5t}^{2n},
+          | |= \answer{ t \cos 5t },
+          | q
+            |= \sum_{n=0}^\infty \frac{t^{2n+2}}{\p{2n+2}\!} \p{-25}^n 
+          | |= t^2 \sum_{n=1}^\infty \frac{t^{2n}}{\p{2n}\!} \p{-25}^{n-1}
+          | |= -\frac{t^2}{25} \p{
+                  \sum_{n=0}^\infty \frac{t^{2n}}{\p{2n}\!} \p{-25}^n
+                  - 1
+                }
+          | |= -\frac{t^2}{25} \p{
+                  \sum_{n=0}^\infty \frac{\p{-1}^n}{\p{2n}\!} \p{5t}^{2n}
+                  - 1
+                }
+          | |= \answer{ \frac{t^2}{25} \p{ 1 - \cos 5t } },
+          | r |= \answer{1}.
+          |});
+
+
+    * **  ${M = \answer{ \mat2{| 1-\alpha | \beta | \alpha | 1-\beta |} }}。
+
+      **  固有多項式は、
+          \align(${
+          | \vmatrix!(2){| \lambda - \p{1-\alpha} | -\beta | -\alpha | \lambda - \p{1-\beta} |}
+            |= \p{ \lambda - \p{1 - \alpha - \beta} }\p{ \lambda - 1 }
+          |});
+          であるから、${M} は
+          \listing{
+            * 固有値 ${\answer{ 1 - \alpha - \beta }} を持ち、
+              対応する固有ベクトルは ${\answer{\pvec{|1|-1|}}}。
+            * 固有値 ${\answer{ 1 }} を持ち、
+              対応する固有ベクトルは ${\answer{\pvec{|\beta|\alpha|}}}。
+          }
+
+      **  ${-1 < 1 - \alpha - \beta < 1} より、${M^n \app{\bm{P}}{0}} は
+          ${n\to\infty} で ${\Ker \p{M - I} \ni \answer{\pvec{|\beta|\alpha|}}} に収束する。
+
+      **  ${\lim_{k\to\infty} \pa{k} = \beta} および ${\pa{n} + \pb{n} = 1} に注意すれば、
+          \align(${
+          | \ra{n+1}
+            |= \pa{n+1} - \beta
+          | |= \p{1-\alpha} \pa{n} + \beta \p{1 - \pa{n}} - \beta
+          | |= \p{1-\alpha} \p{\ra{n} + \beta} + \beta \p{1 - \ra{n} - \beta} - \beta
+          | |= \answer{ \p{1-\alpha - \beta}\p{\ra{n} + \beta} }.
+          |});
+
+
+    *  ${m\times m} 行列 ${A_m} を
+       \gather(${
+       | A_m = \pmatrix!(5){|1|1|||||1|1|||||\ddots||||||1|1|1||||1|}
+       |});
+       で定義する。すなわち、${A_m} は
+       ${i} 行 ${i} 列(${1 \leq i \leq m})、
+       ${i} 行 ${i+1} 列(${1 \leq i \leq n-1})、
+       ${m}行${1}列目の要素が${1}、その他の要素が ${0} である。
+       すると、与えられたベクトルが1次独立となる必要十分条件は、
+       ${\det A_m \neq 0} である。
+
+       \enumerate-cases {
+         * ${m} が偶数のとき、偶数行目の行の和から奇数行目の行の和を引いたものは
+           零ベクトルであるから、${\det A_m = 0}。
+
+         * ${m} が奇数のとき、${1} 行目から ${m-1} 行目までを ${m} 行目に加算したあと
+           ${m} 行目を ${2} で割り、偶数行目を ${m} 行目から引く行基本変形を行うことで
+           行列
+           \gather(${
+           | \pmatrix!(5){|1|1|||||1|1|||||\ddots||||||1|1|||||1|}
+           |});
+           を得る。この行列の ${\det} は ${1} であるので、${\det A_m \neq 0}。
+       }
+
+       したがって、求める必要十分条件は\answer-i{${m} が奇数}であること。
+  }
+>
