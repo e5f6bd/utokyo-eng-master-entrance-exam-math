@@ -1,8 +1,118 @@
+@require: easytable/easytable
 @import: common
+@import: ../../packages/common
+
+let-math \arccos = math-char MathOp `arccos`
+let-math \arctan = math-char MathOp `arctan`
+
+let-inline \variable-substitution [x; a; b; y; p; q] =
+  let its =
+    [x; a; ${\to}; b; y; p; ${\to}; q]
+    |> List.map (fun x -> {${#x}})
+  in
+  open EasyTableAlias in
+  { \easytable?:[m 1; v 1][c; c; c; c](its); }
 
 let-block +math1 = '<
   +subject-heading {数学1}
   +enumerate {
-    * **  
+    * **  ${t = \cos\theta} のとき、
+          ${\dv{t}{\theta} = -\sin\theta} だから、
+          ${\dv{\theta}{t} = -\frac{1}{\sin\theta} = -\frac{1}{\sqrt{1 - t^2}}}。
+          よって、
+          \align(${
+          | \dv{}{x} \p{\log y}
+            |= \dv{}{x} \p{ \log x \cdot \app{\log}{\arccos x}}
+          | \therefore \frac{1}{y} \dv{dy}{dx}
+            |= \frac{1}{x} \arccos x
+                + \frac{1}{\arccos x} \cdot \p{-\frac{1}{\sqrt{1-x^2}}} \cdot \log x
+          | \therefore \dv{y}{x}
+            |= \answer{
+                  \p{\arccos x}^{\log x} \p{
+                    \frac{\app{\log}{\arccos x}}{x} - \frac{\log x}{\sqrt{1-x^2} \arccos x}
+                  }
+                }.
+          |});
+
+      **  \align(${
+          | \int \frac{x^2 + x + 2}{x^3 - px^2} \dd{x}
+            |= \int \p{
+                  \frac{p^2 + p + 2}{p^2} \cdot \frac{1}{x-p}
+                  - \frac{p+2}{p^2} \cdot \frac{1}{x}
+                  - \frac{2}{p} \cdot \frac{1}{x^2}
+                } \dd{x}
+          | |= \answer{
+                \frac{p^2+p+2}{p^2} \log\abs{x-p}
+                - \frac{p+2}{p^2} \log\abs{x}
+                + \frac{2}{px}
+                + C
+              }.
+          |});
+          ただし ${C} は積分定数。
+
+      **  ${x = \sin\phi} と置き換えると、${\dv{x}{\phi} = \cos\phi} で、
+          \fig-center(FigBox.textbox {
+            \variable-substitution(${| x | 0 | \sin\theta | y | 0 | \theta |});
+          });
+          だから、
+          \align(${
+          | I
+            |= \int_0^\theta \frac{\arctan \phi}{\sqrt{1-\sin^2\phi}} \cdot \dd{\phi} \cos\phi
+          | |= \int_0^\theta \arctan \phi \cdot \dd{\phi}.
+          |});
+          ${\arctan 0 = 0} で、${0 \leq \phi \leq \theta} の範囲では ${\arctan \phi} は単調増加だから、
+          \align(${
+          | I
+            |= \theta\cdot\arctan\theta - \int_0^{\arctan\theta} \tan x \dd{x}
+          | |= \theta\cdot\arctan\theta + \pB{ \app{\log}{\cos\theta} }_0^{\arctan \theta}
+          | |= \theta\cdot\arctan\theta + \app{\log}{\app{\cos}{\arctan\theta}}
+          | |= \theta\cdot\arctan\theta - \log\sqrt{1-\theta^2}
+          | |= \answer{ \theta\cdot\arctan\theta - \frac{1}{2} \app{\log}{1-\theta^2}}.
+          |});
+
+    * **  ${f, g} を微分すれば、
+          \align(${
+          | \dv{f}{x} |= \dv{p}{x} \app{\exp}{iax}  + ia \app{f}{x},
+          | \dv{g}{x} |= \dv{q}{x} \app{\exp}{-iax} - ia \app{g}{x},
+          |});
+          これを\peqref{4}, (5) に入れて整理すれば、
+          \gather(${
+          | \answer{
+              \cases{
+                | \app{f}{x} = ia \app{f}{x} - ib \app{g}{x} |
+                | \app{g}{x} = -ia \app{g}{x} - ib \app{f}{x} |
+              |}
+            }.
+          |});
+
+      **  ${A^\ast} で ${A} の複素共役を表すことにすれば、
+          \align(${
+          | \dv{}{x} \p{ \abs{\app{f}{x}}^2 + \abs{\app{g}{x}}^2 }
+            |= \dv{f}{x} f^\ast + \dv{f^\ast}{x} f + \dv{g}{x} g^\ast + \dv{g^\ast}{x} g
+          | |= \p{iaf - ibg} f^\ast + \p{-iaf^\ast + ibg^\ast} f
+          | | \math-skip!(1cm)
+                + \p{-iag - ibf} g^\ast + \p{iag^\ast + ibf^\ast} g
+          | |= 0.
+          |});
+          よって、${\abs{\app{f}{x}}^2 + \abs{\app{g}{x}}^2} の値は ${x} に依存しない。
+
+      **  \alignat(2)(${
+            |\bm{y} |:= \pvec{|f|g|}, |A |:= \mat2{|a|-b|-b|-a|}
+          |}); とすれば、${\bm{y}' = iA\bm{y}}。
+          \alignat(2)(${
+            |P |:= \mat2{|3|1|-1|3|}, |J |:= \mat2{|1|0|0|-1|}
+          |}); とすれば、${P} は正則で ${AP = PJ}。
+          そうすると ${P^{-1}\bm{y}' = iJP^{-1}\bm{y}}。
+          したがって、ある定数 ${C_1, C_2} を用いて
+          \alignat(2)(${
+          | P^{-1}\bm{y} |= \pvec{| C_1 e^{ix} | C_2 e^{-ix} |},
+          | \bm{y} |= \pvec{| 3C_1 e^{ix} + C_2 e^{-ix} | -C_1 e^{ix} + 3C_2 e^{-ix} |}.
+          |});
+          今、${\app{\bm{y}}{0} = \pvec{|1|0|}} より、
+          ${\p{C_1, C_2} = \p{\frac{3}{10}, \frac{1}{10}}} だから、
+          \align(${
+          | \app{f}{x} |= \answer{ \frac{9}{10} e^{ix} + \frac{1}{10} e^{-ix} },
+          | \app{g}{x} |= \answer{-\frac{3}{10} e^{ix} + \frac{3}{10} e^{-ix} }.
+          |});
   }
 >
