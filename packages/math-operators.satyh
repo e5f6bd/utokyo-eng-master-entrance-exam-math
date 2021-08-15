@@ -1,0 +1,8 @@
+let-math \exp = math-char MathOp `exp`
+let-math \ln = math-char MathOp `ln`
+let-math \cosh = math-char MathOp `cosh`
+let-math \sinh = math-char MathOp `sinh`
+let-math \tanh = math-char MathOp `tanh`
+let-math \sech = math-char MathOp `sech`
+let-math \csch = math-char MathOp `csch`
+let-math \coth = math-char MathOp `coth`

@@ -1,0 +1,39 @@
+@require: hdecoset
+@require: vdecoset
+@require: azmath/azmath
+% TODO: import this package breaks enumitem
+% @require: base/list-ext
+@require: base/fn
+@require: enumitem/enumitem
+@require: figbox/figbox
+@require: uline/uline
+@import: stdjareport
+
+% indirect imports
+@import: charts
+@import: enumitem-ext
+@import: math-operators
+@import: math-symbols
+@import: physics
+
+let-inline ctx \fig-center fb =
+  let bt = '<+fig-center(fb);> in
+  let ib-block = embed-block-breakable ctx (read-block ctx bt) in
+  inline-fil ++ ib-block ++ omit-skip-after
+
+let-inline ctx \simple-frame it =
+  let p = 3pt in
+  let pads = (p, p, p, p) in
+  let decos = HDecoSet.simple-frame-stroke 1pt (Gray(0.5)) in
+    inline-frame-breakable pads decos (read-inline ctx it)
+let-inline \answer-i x = {\simple-frame{#x;}}
+let-math \answer x = ${\text!{\answer-i{${#x}}}}
+
+let-math \pvec x = ${\pmatrix!(1)!(x)}
+let-math \mat2 x = ${\pmatrix!(2)!(x)}
+
+let-inline \peqref x = {問題文中式(#x;)}
+let-inline \eqref x = {式 (\ref(`eq:` ^ x);)}
+
+% Resolve name collision
+let-math \underbrace x = ${\AZMathParens.underbrace{#x}}

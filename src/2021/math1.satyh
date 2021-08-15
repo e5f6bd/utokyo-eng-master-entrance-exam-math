@@ -1,0 +1,8 @@
+@import: common
+
+let-block +math1 = '<
+  +subject-heading {数学1}
+  +enumerate {
+    * **  
+  }
+>

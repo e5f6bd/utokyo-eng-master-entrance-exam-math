@@ -1,0 +1,9 @@
+@require: base/list-ext
+@require: base/float
+
+let linspace s e n-points =
+  let interval = (e -. s) /. (float (n-points - 1)) in
+  List.iterate n-points (fun e -> e +. interval) (s -. interval)
+
+let filter-range y-min y-max =
+  List.filter Float.(fun (_, y) -> not Float.is-nan y && y-min <= y && y <= y-max)

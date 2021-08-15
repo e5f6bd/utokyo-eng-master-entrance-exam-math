@@ -1,0 +1,29 @@
+@import: ../../packages/stdjareport
+
+let no-pads = (0pt, 0pt, 0pt, 0pt)
+
+let-block ctx +subject-heading a =
+  let ib-title =
+    let ctx = StdJaReport.make-section-title ctx in
+      read-inline ctx a
+  in
+  let bb-title =
+    let section-heading ctx ib-heading =
+      let section-top-margin = 20pt in
+      let section-bottom-margin = 12pt in
+        line-break true false
+          (ctx |> set-paragraph-margin section-top-margin section-bottom-margin)
+            ib-heading
+    in
+    let ib =
+      inline-frame-breakable no-pads VDecoSet.empty (ib-title ++ inline-fil)
+    in
+      section-heading ctx ib
+  in
+    bb-title
+
+let-block +enumerate x = '<
+  +enumerate?:(
+    Enumitem.(change-by-depth [dot-Roman; dot-arabic])
+  )(x);
+>

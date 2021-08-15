@@ -1,0 +1,6 @@
+@import: ../../packages/common
+@import: math1
+
+document '<
+  +math1;
+>

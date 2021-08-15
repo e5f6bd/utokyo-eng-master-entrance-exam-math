@@ -1,0 +1,35 @@
+@require: math
+@require: base/typeset/math-ext
+
+let define-char s sb =
+  let s = string-unexplode [s] in
+  let sb = string-unexplode [sb] in
+  math-variant-char MathOrd (|
+    italic        = s;
+    bold-italic   = sb;
+    roman         = s;
+    bold-roman    = sb;
+    script        = s;
+    bold-script   = sb;
+    fraktur       = s;
+    bold-fraktur  = sb;
+    double-struck = s;
+  |)
+
+let-math \iff = ${\Longleftrightarrow}
+let-math \oint =
+  let kernfL _ _ = 0pt in
+  let kernfR fontsize ypos = fontsize *' 0.45 in
+    math-big-char-with-kern MathOp `∮` kernfL kernfR
+
+% swap epsilon and varepsilon
+let-math \varepsilon = ${\epsilon}
+let-math \epsilon = define-char 0x1D716 0x1D750
+
+% swap phi and varphi
+let-math \varphi = ${\phi}
+let-math \phi = define-char 0x1D719 0x1D753
+
+let-math \dagger = define-char 0x2020 0x2020
+let-math \hbar = define-char 0x210F 0x210F
+let-math \ell = define-char 0x2113 0x2113

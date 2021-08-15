@@ -1,0 +1,18 @@
+@require: math
+
+% physics - 2.5 Derivatives
+let dv-base ?:n d f x = 
+  match n with
+  | Some(n) -> ${\frac{#d^{#n}#f}{#d#x^{#n}}}
+  | None -> ${\frac{#d #f}{#d #x}}
+let-math \dd x = math-group MathPrefix MathInner ${\ordd#x}
+let-math \dv ?:n f x =
+  match n with
+  | Some(n) -> dv-base ?:n ${\ordd} f x
+  | None -> dv-base ${\ordd} f x
+let-math \pdv ?:n f x = % dv n f x
+  match n with
+  | Some(n) -> dv-base ?:n ${\partial} f x
+  | None -> dv-base ${\partial} f x
+let-math \pdv2 f x y = 
+  ${\frac{\partial^2 #f}{\partial #x \partial #y}}

@@ -1,0 +1,53 @@
+@require: enumitem/enumitem
+
+% page-breakable enumerate
+let enumitem-itemf ctx depth ib-label text = 
+  let text-indent = (get-font-size ctx) *' ((EnumitemParam.get Enumitem.item-indent-ratio)*. (float depth)) in
+  let decos = 
+    let deco _ _ _ _ = [] in
+    (deco,deco,deco,deco)
+  in
+  let index-width = get-natural-width ib-label in
+  let pads = (text-indent +' index-width,0pt,0pt,0pt) in
+  let ib = 
+    let item-text-width = (get-text-width ctx) -' text-indent -' index-width in
+    block-frame-breakable ctx pads decos (fun c ->
+      line-break true true c (
+        (inline-skip (index-width *' (0.0 -. 1.0))) ++
+        ib-label ++ 
+        (read-inline ctx text) ++
+        inline-fil
+      )
+    )
+  in
+  ib
+
+let-block ctx +listing ?:labelf item =
+  let labelf = Option.from Enumitem.bullet labelf in
+  read-block ctx '<+genlisting(labelf)(enumitem-itemf)(item);>
+let-inline ctx \listing ?:labelf item =
+  let it =
+    match labelf with
+    | Some(labelf) -> {\listing-from-block<+listing?:(labelf)(item);>}
+    | None         -> {\listing-from-block<+listing?*(item);>}
+  in
+  read-inline ctx it
+
+let default-enum-rule idxlst =
+  open Enumitem in
+  match (List.length idxlst) with
+  | 1 -> dot to-arabic idxlst
+  | 2 -> paren to-alph idxlst
+  | 3 -> paren to-roman idxlst
+  | _ -> dot to-arabic idxlst
+
+let-block ctx +enumerate ?:labelf item =
+  let labelf = Option.from default-enum-rule labelf in
+  read-block ctx '<+genlisting(labelf)(enumitem-itemf)(item);>
+let-inline ctx \enumerate ?:labelf item =
+  let it =
+    match labelf with
+    | Some(labelf) -> {\listing-from-block<+enumerate?:(labelf)(item);>}
+    | None         -> {\listing-from-block<+enumerate?*(item);>}
+  in
+  read-inline ctx it
