@@ -14,7 +14,7 @@ let-block +math3 = '<
     * **  ${\app{M}{z} = z} のとき、
           ${
            z = \frac{mz}{mz - z + 1}
-           \iff \p{m - 1}\pb{z - 1}z = 0.
+           \iff \p{m - 1}\p{z - 1}z = 0.
           }
           したがって、不動点は ${z = \answer{0, 1}}。
 
